@@ -27,8 +27,8 @@ public class JdbcTemplateArticleRepository implements ArticleRepository {
         // 인덱스 중복 여부 확인
         if (findById(article.getId()).isEmpty()) {
             // 한번에 PK를 가져오는 방식으로 변경
-            String sql = "INSERT INTO CAFE_ARTICLE(WRITER, TITLE, CONTENTS, cafeUserId) " +
-                    "VALUES (?, ?, ?, (select id from cafe_user where name = ?))";
+            String sql = "INSERT INTO CAFE_ARTICLE(WRITER, TITLE, CONTENTS, CAFEUSERID) " +
+                    "VALUES (?, ?, ?, (SELECT ID FROM CAFE_USER WHERE NAME = ?))";
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
             jdbcTemplate.update(connection -> {
@@ -50,7 +50,7 @@ public class JdbcTemplateArticleRepository implements ArticleRepository {
     public boolean updateArticle(Article article) {
         // 해당 번호 게시글 존재여부 체크
         if (findById(article.getId()).isPresent()) {
-            jdbcTemplate.update("update CAFE_ARTICLE set title=?, contents=?, time=? where ID=?",
+            jdbcTemplate.update("UPDATE CAFE_ARTICLE SET TITLE=?, CONTENTS=?, TIME=? WHERE ID=?",
                     article.getTitle(), article.getContents(), LocalDateTime.now(), article.getId());
             return true;
         }
@@ -61,8 +61,8 @@ public class JdbcTemplateArticleRepository implements ArticleRepository {
         // 해당 번호 게시글 존재여부 체크
         if (findById(id).isPresent()) {
             // 게시글 삭제시 댓글도 삭제 되게 변경
-            String sqlReply = "UPDATE CAFE_REPLY SET deleted=true where ARTICLEID = " + id;
-            String sqlArticle = "update CAFE_ARTICLE set deleted = true where ID = " + id;
+            String sqlReply = "UPDATE CAFE_REPLY SET DELETED=TRUE WHERE ARTICLEID = " + id;
+            String sqlArticle = "UPDATE CAFE_ARTICLE SET DELETED = TRUE WHERE ID = " + id;
             jdbcTemplate.batchUpdate(sqlReply, sqlArticle);
             return true;
         }
@@ -71,13 +71,13 @@ public class JdbcTemplateArticleRepository implements ArticleRepository {
 
     @Override
     public Optional<Article> findById(long id) {
-        List<Article> result = jdbcTemplate.query("select * from cafe_article where id = ? AND deleted = false", articleRowMapper(), id);
+        List<Article> result = jdbcTemplate.query("SELECT * FROM CAFE_ARTICLE WHERE ID = ? AND DELETED = FALSE", articleRowMapper(), id);
         return result.stream().findAny();
     }
 
     @Override
     public List<Article> findAllArticle() {
-        List<Article> result = jdbcTemplate.query("select * from cafe_article where deleted = false ORDER BY id desc ", articleRowMapper());
+        List<Article> result = jdbcTemplate.query("SELECT * FROM CAFE_ARTICLE WHERE DELETED = FALSE ORDER BY ID DESC ", articleRowMapper());
         return result;
     }
 
@@ -89,14 +89,6 @@ public class JdbcTemplateArticleRepository implements ArticleRepository {
             article.setTitle(rs.getString("title"));
             article.setContents(rs.getString("contents"));
             article.setTime(rs.getTimestamp("time"));
-            return article;
-        };
-    }
-
-    private RowMapper<Article> articlePKMapper() {
-        return (rs, rowNum) -> {
-            Article article = new Article();
-            rs.getLong("MAX(ID)");
             return article;
         };
     }

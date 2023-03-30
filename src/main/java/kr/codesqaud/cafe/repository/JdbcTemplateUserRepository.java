@@ -34,7 +34,7 @@ public class JdbcTemplateUserRepository implements UserRepository {
     public boolean update(User user) {
         // 해당 번호 존재여부 체크
         if (findById(user.getId()).isPresent()) {
-            jdbcTemplate.update("update cafe_user set USERID=?, PASSWORD=?, NAME=?, EMAIL=? where ID=?",
+            jdbcTemplate.update("UPDATE CAFE_USER SET USERID=?, PASSWORD=?, NAME=?, EMAIL=? WHERE ID=?",
                     user.getUserId(), user.getPassword(), user.getName(), user.getEmail(), user.getId());
             return true;
         }
@@ -43,18 +43,18 @@ public class JdbcTemplateUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findByUserId(String userId) {
-        List<User> result = jdbcTemplate.query("select * from cafe_user where USERID = ?", userRowMapper(), userId);
+        List<User> result = jdbcTemplate.query("SELECT * FROM CAFE_USER WHERE USERID = ?", userRowMapper(), userId);
         return result.stream().findAny();
     }
 
     public Optional<User> findById(long id) {
-        List<User> result = jdbcTemplate.query("select * from cafe_user where ID = ?", userRowMapper(), id);
+        List<User> result = jdbcTemplate.query("SELECT * FROM CAFE_USER WHERE ID = ?", userRowMapper(), id);
         return result.stream().findAny();
     }
 
     @Override
     public List<User> findAll() {
-        return jdbcTemplate.query("select * from cafe_user", userRowMapper());
+        return jdbcTemplate.query("SELECT * FROM CAFE_USER", userRowMapper());
     }
 
     private RowMapper<User> userRowMapper() {

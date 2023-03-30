@@ -25,7 +25,7 @@ public class JdbcTemplateReplyRepository {
 
     public boolean updateReply(Reply reply) {
         if (findById(reply.getId()).isPresent()) {
-            jdbcTemplate.update("update CAFE_REPLY set CONTENTS=?, time=? where ID=?"
+            jdbcTemplate.update("UPDATE CAFE_REPLY SET CONTENTS=?, TIME=? WHERE ID=?"
                     , reply.getContents(), LocalDateTime.now(), reply.getId());
             return true;
         }
@@ -34,7 +34,7 @@ public class JdbcTemplateReplyRepository {
 
     public boolean deleteReply(long id) {
         if (findById(id).isPresent()) {
-            jdbcTemplate.update("UPDATE CAFE_REPLY SET deleted=true where ID=?", id);
+            jdbcTemplate.update("UPDATE CAFE_REPLY SET DELETED=TRUE WHERE ID=?", id);
 //            jdbcTemplate.update("DELETE CAFE_REPLY where ID=?", id);
             return true;
         }
@@ -43,19 +43,19 @@ public class JdbcTemplateReplyRepository {
 
     public boolean deleteReplyFormArticle(long articleId) {
         if (!findAllReply(articleId).isEmpty()) {
-            jdbcTemplate.update("UPDATE CAFE_REPLY SET deleted=true where ARTICLEID=?", articleId);
+            jdbcTemplate.update("UPDATE CAFE_REPLY SET DELETED=TRUE WHERE ARTICLEID=?", articleId);
             return true;
         }
         return false;
     }
 
     public Optional<Reply> findById(long id) {
-        List<Reply> result = jdbcTemplate.query("select * from CAFE_REPLY where id = ? AND deleted = false", replyRowMapper(), id);
+        List<Reply> result = jdbcTemplate.query("SELECT * FROM CAFE_REPLY WHERE ID = ? AND DELETED = FALSE", replyRowMapper(), id);
         return result.stream().findAny();
     }
 
     public List<Reply> findAllReply(long articleId) {
-        return jdbcTemplate.query("select * from CAFE_REPLY where articleId=? AND deleted = false", replyRowMapper(), articleId);
+        return jdbcTemplate.query("SELECT * FROM CAFE_REPLY WHERE ARTICLEID=? AND DELETED = FALSE", replyRowMapper(), articleId);
     }
 
     private RowMapper<Reply> replyRowMapper() {

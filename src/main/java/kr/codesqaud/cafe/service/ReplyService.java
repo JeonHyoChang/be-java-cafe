@@ -19,8 +19,8 @@ public class ReplyService {
     /**
      * 댓글 작성 & 업데이트
      */
-    public void write(Reply reply) {
-        replyRepository.saveReply(reply);
+    public Reply write(Reply reply) {
+        return replyRepository.saveReply(reply).orElse(null);
     }
 
     public boolean update(Reply reply) {

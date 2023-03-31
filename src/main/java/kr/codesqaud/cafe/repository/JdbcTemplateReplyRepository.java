@@ -3,9 +3,13 @@ package kr.codesqaud.cafe.repository;
 import kr.codesqaud.cafe.domain.Reply;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +22,22 @@ public class JdbcTemplateReplyRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void saveReply(Reply reply) {
-        jdbcTemplate.update("INSERT INTO CAFE_REPLY(WRITER, CONTENTS, ARTICLEID) VALUES (?, ?, ?)"
-                , reply.getWriter(), reply.getContents(), reply.getArticleId());
+    public Optional<Reply> saveReply(Reply reply) {
+        String sql = "INSERT INTO CAFE_REPLY(WRITER, CONTENTS, ARTICLEID) VALUES (?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, reply.getWriter());
+            pstmt.setString(2, reply.getContents());
+            pstmt.setLong(3, reply.getArticleId());
+            return pstmt;
+        }, keyHolder);
+
+        long id = keyHolder.getKey().longValue();
+        return findById(id);
+//        jdbcTemplate.update("INSERT INTO CAFE_REPLY(WRITER, CONTENTS, ARTICLEID) VALUES (?, ?, ?)"
+//                , reply.getWriter(), reply.getContents(), reply.getArticleId());
     }
 
     public boolean updateReply(Reply reply) {

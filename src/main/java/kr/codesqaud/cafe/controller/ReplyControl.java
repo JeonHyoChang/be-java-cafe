@@ -24,7 +24,7 @@ public class ReplyControl {
     }
 
     // 댓글 작성
-    @PostMapping("/articles/{articleId}/answers")
+//    @PostMapping("/articles/{articleId}/answers")
     public String writeReply(HttpSession session, @PathVariable long articleId, @ModelAttribute Reply reply) {
         User sessionUser = (User) getUserInfo(session);
         if (sessionUser != null) {

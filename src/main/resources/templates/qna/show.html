@@ -1,7 +1,7 @@
 {{>layout/header}}
 {{>layout/nav}}
 
-<div class="container" id="main">
+<div class="container" id="main" xmlns="http://www.w3.org/1999/html">
     <div class="col-md-12 col-sm-12 col-lg-12">
         <div class="panel panel-default">
             {{#article}}
@@ -46,6 +46,7 @@
                 {{/article}}
 
                 <div class="qna-comment">
+
                     <div class="qna-comment-slipp">
                         <p class="qna-comment-count"><strong>{{replySize}}</strong>개의 의견</p>
                         <div class="qna-comment-slipp-articles">
@@ -59,7 +60,8 @@
                                     <div class="article-header-text">
                                         <a href="/users/{{articleId}}/{{writer}}"
                                            class="article-author-name">{{writer}}</a>
-                                        <a href="#answer-1434" class="article-header-time" title="퍼머링크">
+                                        <a href="#answer-1434" class="article-header-time"
+                                           title="퍼머링크">
                                             {{time}}
                                         </a>
                                     </div>
@@ -69,31 +71,33 @@
                                 </div>
                                 <div class="article-util">
                                     <ul class="article-util-list">
-                                        <!--                                        <li>-->
-                                        <!--                                            <a class="link-modify-article"-->
-                                        <!--                                               href="/questions/413/answers/1405/form">수정</a>-->
-                                        <!--                                        </li>-->
                                         <li>
                                             <form class="delete-answer-form"
                                                   action="/articles/{{articleId}}/answers/{{id}}"
                                                   method="POST">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <button type="submit" class="delete-answer-button">삭제</button>
+                                                <input type="hidden" name="_method"
+                                                       value="DELETE">
+                                                <button type="submit"
+                                                        class="delete-answer-button">삭제
+                                                </button>
                                             </form>
                                         </li>
                                     </ul>
                                 </div>
                             </article>
                             {{/reply}}
-                            <form class="submit-write" name="reply" method="post"
-                                  action="/articles/{{articleId}}/answers">
+                            <form class="submit-write" name="answer">
                                 <div class="form-group" style="padding:14px;">
-                                    <textarea type="contents" id="contents" name="contents" class="form-control"
-                                              placeholder="Update your status"></textarea>
+                                <textarea class="form-control" name="contents"
+                                          placeholder="Update your status"></textarea>
                                 </div>
-                                <button class="btn btn-success pull-right" type="submit">답변하기</button>
+
+                                <button onclick="addAnswer(event)" class="btn btn-success pull-right">
+                                    답변하기
+                                </button>
                                 <div class="clearfix"/>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -109,8 +113,8 @@
                 <img src="https://graph.facebook.com/v2.3/1324855987/picture" class="article-author-thumb" alt="">
             </div>
             <div class="article-header-text">
-                <a href="#" class="article-author-name">{0}</a>
-                <div class="article-header-time">{1}</div>
+                <a href="#" class="article-author-name">{1}</a>
+                <div class="article-header-time">{3}</div>
             </div>
         </div>
         <div class="article-doc comment-doc">
@@ -119,10 +123,7 @@
         <div class="article-util">
             <ul class="article-util-list">
                 <li>
-                    <a class="link-modify-article" href="/api/qna/updateAnswer/{3}">수정</a>
-                </li>
-                <li>
-                    <form class="delete-answer-form" action="/api/questions/{3}/answers/{4}" method="POST">
+                    <form class="delete-answer-form" action="/api/questions/{4}/answers/{0}" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="delete-answer-button">삭제</button>
                     </form>
